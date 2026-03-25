@@ -1,11 +1,14 @@
 import Stripe from "stripe";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const preferredRegion = "fra1";
 
 export async function POST() {
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      maxNetworkRetries: 1,
+      timeout: 20000,
+      maxNetworkRetries: 2,
     });
 
     const baseUrl = process.env.VERCEL_URL
