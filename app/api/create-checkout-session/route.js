@@ -4,10 +4,9 @@ export async function POST() {
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-    const baseUrl =
-      process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000";
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000";
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -23,9 +22,14 @@ export async function POST() {
 
     return Response.json({ url: session.url });
   } catch (error) {
-    console.error("Stripe error:", error);
+    console.error("Stripe error full:", error);
+
     return Response.json(
-      { error: error.message },
+      {
+        error: error?.message || "Noe gikk galt med Stripe",
+        type: error?.type || null,
+        code: error?.code || null,
+      },
       { status: 500 }
     );
   }

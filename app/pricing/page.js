@@ -12,7 +12,7 @@ export default function PricingPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert(data.error || "Noe gikk galt");
+        alert(JSON.stringify(data));
       }
     } catch (error) {
       alert("Feil med betaling");
