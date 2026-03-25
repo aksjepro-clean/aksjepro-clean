@@ -1,24 +1,4 @@
-"use client";
-
 export default function PricingPage() {
-  const handleCheckout = async () => {
-    try {
-      const res = await fetch("/api/create-checkout-session", {
-        method: "POST",
-      });
-
-      const data = await res.json();
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert(JSON.stringify(data));
-      }
-    } catch (error) {
-      alert("Feil med betaling");
-    }
-  };
-
   return (
     <main className="min-h-screen bg-black text-white">
       <section className="max-w-5xl mx-auto px-6 py-20">
@@ -46,12 +26,14 @@ export default function PricingPage() {
             <p>✓ Tilgang så lenge abonnementet er aktivt</p>
           </div>
 
-          <button
-            onClick={handleCheckout}
-            className="mt-8 w-full rounded-2xl bg-white px-6 py-4 text-black font-semibold hover:opacity-90"
+          <a
+            href="https://buy.stripe.com/4gM00i5OW9IF0zc5vMaMU00"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 block w-full rounded-2xl bg-white px-6 py-4 text-center text-black font-semibold hover:opacity-90"
           >
             Kjøp premium
-          </button>
+          </a>
 
           <p className="mt-6 text-sm text-zinc-500 leading-6">
             Abonnementet fornyes automatisk hver måned til det sies opp.
