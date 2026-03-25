@@ -5,8 +5,8 @@ export async function POST() {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
     const baseUrl =
-      process.env.VERCEL_PROJECT_PRODUCTION_URL
-        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
         : "http://localhost:3000";
 
     const session = await stripe.checkout.sessions.create({
@@ -25,7 +25,7 @@ export async function POST() {
   } catch (error) {
     console.error("Stripe error:", error);
     return Response.json(
-      { error: error.message || "Noe gikk galt med Stripe" },
+      { error: error.message },
       { status: 500 }
     );
   }
