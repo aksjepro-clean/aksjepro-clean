@@ -1,7 +1,8 @@
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2024-06-20",
+});
 export async function POST() {
   try {
     const session = await stripe.checkout.sessions.create({
