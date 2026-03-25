@@ -1,10 +1,14 @@
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2024-06-20",
-});
 export async function POST() {
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+    const baseUrl =
+      process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : "http://localhost:3000";
+
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [
@@ -13,8 +17,8 @@ export async function POST() {
           quantity: 1,
         },
       ],
-      success_url: "http://localhost:3000/success",
-      cancel_url: "http://localhost:3000/pricing",
+      success_url: `${baseUrl}/success`,
+      cancel_url: `${baseUrl}/pricing`,
     });
 
     return Response.json({ url: session.url });
