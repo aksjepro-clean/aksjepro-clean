@@ -27,11 +27,11 @@ export default function PricingPage() {
           </div>
 
           <a
-            href="https://buy.stripe.com/4gM00i5OW9IF0zc5vMaMU00"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 block w-full rounded-2xl bg-white px-6 py-4 text-center text-black font-semibold hover:opacity-90"
+           href="https://buy.stripe.com/..."
+          target="_blank"
+          rel="noopener noreferrer"
           >
+          
             Kjøp premium
           </a>
 
