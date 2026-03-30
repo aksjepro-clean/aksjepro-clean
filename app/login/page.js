@@ -1,4 +1,60 @@
+"use client";
+
+import { useState } from "react";
+import { auth, db } from "@/lib/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+
 export default function LoginPage() {
+  const [mode, setMode] = useState("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleAuth = async () => {
+    try {
+      if (mode === "signup") {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          email: userCredential.user.email,
+          premium: false,
+          createdAt: new Date().toISOString(),
+        });
+
+        alert("Konto opprettet!");
+      } else {
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+
+        if (!userDoc.exists()) {
+          await setDoc(doc(db, "users", userCredential.user.uid), {
+            email: userCredential.user.email,
+            premium: false,
+            createdAt: new Date().toISOString(),
+          });
+        }
+
+        alert("Innlogging vellykket!");
+      }
+
+      window.location.href = "/dashboard";
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-black text-white">
       <section className="max-w-md mx-auto px-6 py-20">
@@ -7,18 +63,24 @@ export default function LoginPage() {
             AksjePro
           </p>
 
-          <h1 className="mt-4 text-4xl font-bold">Logg inn</h1>
+          <h1 className="mt-4 text-4xl font-bold">
+            {mode === "login" ? "Logg inn" : "Opprett konto"}
+          </h1>
 
           <p className="mt-4 text-zinc-400">
-            Logg inn for å få tilgang til premium dashboard og abonnement.
+            {mode === "login"
+              ? "Logg inn for å få tilgang til premium dashboard og abonnement."
+              : "Lag en konto for å komme i gang med AksjePro."}
           </p>
 
-          <form className="mt-8 space-y-5">
+          <div className="mt-8 space-y-5">
             <div>
               <label className="block text-sm text-zinc-400 mb-2">E-post</label>
               <input
                 type="email"
                 placeholder="navn@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-2xl border border-zinc-800 bg-black px-4 py-3 outline-none focus:border-zinc-600"
               />
             </div>
@@ -28,21 +90,30 @@ export default function LoginPage() {
               <input
                 type="password"
                 placeholder="Skriv passord"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-2xl border border-zinc-800 bg-black px-4 py-3 outline-none focus:border-zinc-600"
               />
             </div>
 
             <button
               type="button"
+              onClick={handleAuth}
               className="w-full rounded-2xl bg-white px-6 py-4 text-black font-semibold hover:opacity-90"
             >
-              Logg inn
+              {mode === "login" ? "Logg inn" : "Opprett konto"}
             </button>
-          </form>
+          </div>
 
-          <p className="mt-6 text-sm text-zinc-500">
-            Har du ikke konto ennå? Velg premium for å komme i gang.
-          </p>
+          <button
+            type="button"
+            onClick={() => setMode(mode === "login" ? "signup" : "login")}
+            className="mt-6 text-sm text-zinc-400 underline"
+          >
+            {mode === "login"
+              ? "Har du ikke konto? Opprett konto"
+              : "Har du allerede konto? Logg inn"}
+          </button>
         </div>
       </section>
     </main>
